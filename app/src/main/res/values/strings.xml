@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Reminders</string>
+    <string name="reminder_title">Title</string>
+    <string name="reminder_description">Description</string>
+    <string name="reminder_type">Type</string>
+    <string name="field_required_error">This field is required</string>
+    <string name="exceeded_limit_characters_title">The title must not contain more than 50 characters</string>
 </resources>
