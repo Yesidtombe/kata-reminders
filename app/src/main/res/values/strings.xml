@@ -5,4 +5,8 @@
     <string name="reminder_type">Type</string>
     <string name="field_required_error">This field is required</string>
     <string name="exceeded_limit_characters_title">The title must not contain more than 50 characters</string>
+    <string name="exceeded_limit_characters_description">The description must not contain more than 250 characters</string>
+    <string name="add_new_reminder">Add reminder</string>
+    <string name="date">Date</string>
+    <string name="hour">Hour</string>
 </resources>

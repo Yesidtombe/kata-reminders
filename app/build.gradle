@@ -62,7 +62,11 @@ dependencies {
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation "androidx.hilt:hilt-navigation-compose:$hiltComposeVersion"
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:$navigationComposeVersion"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

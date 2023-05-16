@@ -16,12 +16,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dojo.globant.reminders.R
+import com.dojo.globant.reminders.common.util.UiText
 
 @Composable
 fun GenericTextField(
     text: String,
     onValueChange: (String) -> Unit,
-    errorMessage: String? = null,
+    errorMessage: UiText? = null,
     @StringRes label: Int? = null,
     @StringRes placeholder: Int? = null,
     isEnabled: Boolean = true,
@@ -45,7 +46,7 @@ fun GenericTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp, start = 16.dp, end = 16.dp),
-                text = it,
+                text = it.asString(),
                 color = Color.Red
             )
         }

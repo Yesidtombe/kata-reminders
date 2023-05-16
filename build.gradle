@@ -2,6 +2,8 @@ buildscript {
     ext {
         composeUiVersion = '1.4.3'
         hiltVersion = '2.43.2'
+        hiltComposeVersion = '1.0.0'
+        navigationComposeVersion = '2.5.3'
         activityComposeVersion = '1.7.1'
         material3Version = '1.1.0'
     }

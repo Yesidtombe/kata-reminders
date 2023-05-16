@@ -1,31 +1,34 @@
 package com.dojo.globant.reminders.feature.reminder.list.ui.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.dojo.globant.reminders.R
+import com.dojo.globant.reminders.common.Constants
+import com.dojo.globant.reminders.core.navigation.Destination
 import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ReminderScreen() {
+fun ReminderScreen(
+    navController: NavController
+) {
     val items = listOf(
         Reminder(1, "Recordatorio 1", "Este es el recordatorio 1", Reminder.TypeReminder.WORKING, R.drawable.round_access_time, Date().time, Date().time),
         Reminder(2, "Recordatorio 2", "Este es el recordatorio 2", Reminder.TypeReminder.PERSONAL, R.drawable.round_access_time, Date().time, Date().time),
@@ -35,7 +38,7 @@ fun ReminderScreen() {
     Scaffold(
         floatingActionButton = {
             FAB {
-
+                navController.navigate(route = Destination.ADD)
             }
         }
     ) {
@@ -68,7 +71,9 @@ fun MyReminder(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                modifier = Modifier.width(42.dp).height(42.dp),
+                modifier = Modifier
+                    .width(42.dp)
+                    .height(42.dp),
                 alignment = Alignment.Center,
                 painter = painterResource(id = item.image),
                 contentDescription = item.title
@@ -84,7 +89,7 @@ fun MyReminder(
                 Text(text = item.title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
             Column {
-                val date = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+                val date = SimpleDateFormat(Constants.PATTERN_DATE_HOUR, Locale.getDefault())
                 Text(text = date.format(item.date))
             }
             Column {
@@ -92,6 +97,13 @@ fun MyReminder(
             }
         }
     }
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp)
+            .height(1.dp)
+            .background(Color.LightGray)
+    )
 }
 
 @Composable
@@ -102,10 +114,4 @@ fun FAB(onAddClicked: () -> Unit) {
     ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = null)
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MyPreview() {
-    ReminderScreen()
 }
