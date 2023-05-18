@@ -32,7 +32,8 @@ class AddReminderViewModel @Inject constructor(
     fun onEvent(
         event: AddReminderFormEvent,
         navController: NavController? = null,
-        context: Context? = null
+        context: Context? = null,
+        onClickedAddReminder: ((Long) -> Unit)? = null
     ) {
         when (event) {
             is AddReminderFormEvent.TitleChanged -> {
@@ -52,13 +53,17 @@ class AddReminderViewModel @Inject constructor(
             }
             is AddReminderFormEvent.OnCreateReminder -> {
                 navController?.let {
-                    submitData(it, context)
+                    submitData(it, context, onClickedAddReminder)
                 }
             }
         }
     }
 
-    private fun submitData(navController: NavController, context: Context?) {
+    private fun submitData(
+        navController: NavController,
+        context: Context?,
+        onClickedAddReminder: ((Long) -> Unit)?
+    ) {
         val titleResult = validateTitleUseCase(state.title)
         val descriptionResult = validateDescriptionUseCase(state.description)
         val typeResult = validateTypeUseCase(state.type?.name.orEmpty())
@@ -83,16 +88,21 @@ class AddReminderViewModel @Inject constructor(
         if (hasError)
             return
 
-        addReminder(navController, context)
+        addReminder(navController, context, onClickedAddReminder)
     }
 
-    private fun addReminder(navController: NavController, context: Context?) {
+    private fun addReminder(
+        navController: NavController,
+        context: Context?,
+        onClickedAddReminder: ((Long) -> Unit)?
+    ) {
         viewModelScope.launch {
             addReminderUseCase(state.toDomain()).collect { result ->
                 if (result) {
                     context?.let { ctx ->
                         Toast.makeText(ctx, ctx.getString(R.string.reminder_created_message), Toast.LENGTH_SHORT).show()
                     }
+                    onClickedAddReminder?.invoke(state.date + state.time)
                     navController.popBackStack()
                 }
             }

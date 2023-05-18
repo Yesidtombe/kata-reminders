@@ -41,7 +41,8 @@ import java.util.*
 @Composable
 fun AddReminder(
     viewModel: AddReminderViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    onClickedAddReminder: (Long) -> Unit
 ) {
     val state = viewModel.state
     val context = LocalContext.current
@@ -166,7 +167,8 @@ fun AddReminder(
                 viewModel.onEvent(
                     event = AddReminderFormEvent.OnCreateReminder,
                     navController = navController,
-                    context = context
+                    context = context,
+                    onClickedAddReminder = onClickedAddReminder
                 )
             }
         ) {

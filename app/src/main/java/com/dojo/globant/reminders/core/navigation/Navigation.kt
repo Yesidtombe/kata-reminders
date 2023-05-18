@@ -16,7 +16,8 @@ object Destination {
 
 @Composable
 fun Navigation (
-    navController: NavHostController
+    navController: NavHostController,
+    onClickedAddReminder: (Long) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -26,7 +27,7 @@ fun Navigation (
             ReminderScreen(navController = navController)
         }
         composable(route = Destination.ADD) {
-            AddReminder(navController = navController)
+            AddReminder(navController = navController, onClickedAddReminder = onClickedAddReminder)
         }
         composable(route = "${Destination.DETAILS}/{id}") {
             DetailReminderScreen(idReminder = it.arguments?.getString("id"))
