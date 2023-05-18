@@ -3,6 +3,7 @@ package com.dojo.globant.reminders.feature.reminder.list.domain.model
 import com.dojo.globant.reminders.R
 import com.dojo.globant.reminders.feature.reminder.add.data.db.entities.ReminderEntity
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
+import java.io.Serializable
 
 data class Reminder(
     val id: Int,
@@ -12,7 +13,7 @@ data class Reminder(
     val image: Int,
     val date: Long,
     val time: Long
-) {
+) : Serializable {
     enum class TypeReminder {
         WORKING, PERSONAL
     }

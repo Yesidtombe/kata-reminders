@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dojo.globant.reminders.feature.reminder.add.ui.view.AddReminder
 import com.dojo.globant.reminders.feature.reminder.detail.ui.view.DetailReminderScreen
+import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
 import com.dojo.globant.reminders.feature.reminder.list.ui.view.ReminderScreen
 
 object Destination {
@@ -17,7 +18,7 @@ object Destination {
 @Composable
 fun Navigation (
     navController: NavHostController,
-    onClickedAddReminder: (Long) -> Unit
+    onClickedAddReminder: (Reminder) -> Unit
 ) {
     NavHost(
         navController = navController,

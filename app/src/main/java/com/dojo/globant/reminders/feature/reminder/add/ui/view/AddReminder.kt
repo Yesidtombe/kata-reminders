@@ -42,7 +42,7 @@ import java.util.*
 fun AddReminder(
     viewModel: AddReminderViewModel = hiltViewModel(),
     navController: NavController,
-    onClickedAddReminder: (Long) -> Unit
+    onClickedAddReminder: (Reminder) -> Unit
 ) {
     val state = viewModel.state
     val context = LocalContext.current

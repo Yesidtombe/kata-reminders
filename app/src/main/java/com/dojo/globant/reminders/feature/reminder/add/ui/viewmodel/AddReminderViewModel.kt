@@ -12,6 +12,7 @@ import com.dojo.globant.reminders.R
 import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.*
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderFormEvent
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
+import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
 import com.dojo.globant.reminders.feature.reminder.list.domain.model.toDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class AddReminderViewModel @Inject constructor(
         event: AddReminderFormEvent,
         navController: NavController? = null,
         context: Context? = null,
-        onClickedAddReminder: ((Long) -> Unit)? = null
+        onClickedAddReminder: ((Reminder) -> Unit)? = null
     ) {
         when (event) {
             is AddReminderFormEvent.TitleChanged -> {
@@ -62,7 +63,7 @@ class AddReminderViewModel @Inject constructor(
     private fun submitData(
         navController: NavController,
         context: Context?,
-        onClickedAddReminder: ((Long) -> Unit)?
+        onClickedAddReminder: ((Reminder) -> Unit)?
     ) {
         val titleResult = validateTitleUseCase(state.title)
         val descriptionResult = validateDescriptionUseCase(state.description)
@@ -94,7 +95,7 @@ class AddReminderViewModel @Inject constructor(
     private fun addReminder(
         navController: NavController,
         context: Context?,
-        onClickedAddReminder: ((Long) -> Unit)?
+        onClickedAddReminder: ((Reminder) -> Unit)?
     ) {
         viewModelScope.launch {
             addReminderUseCase(state.toDomain()).collect { result ->
@@ -102,7 +103,7 @@ class AddReminderViewModel @Inject constructor(
                     context?.let { ctx ->
                         Toast.makeText(ctx, ctx.getString(R.string.reminder_created_message), Toast.LENGTH_SHORT).show()
                     }
-                    onClickedAddReminder?.invoke(state.date + state.time)
+                    onClickedAddReminder?.invoke(state.toDomain())
                     navController.popBackStack()
                 }
             }

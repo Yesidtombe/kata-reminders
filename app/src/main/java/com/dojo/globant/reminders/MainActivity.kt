@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.dojo.globant.reminders.AlarmNotification.Companion.NOTIFICATION_ID
 import com.dojo.globant.reminders.core.navigation.Navigation
+import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
 import com.dojo.globant.reminders.ui.theme.RemindersTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,9 +48,9 @@ class MainActivity : ComponentActivity() {
         }
         createChannel()
     }
-    private fun scheduleNotification(date: Long) {
+    private fun scheduleNotification(reminder: Reminder) {
         val intent = Intent(applicationContext, AlarmNotification::class.java).apply {
-            putExtra("TEXT", "Helloooo!")
+            putExtra("myReminder", reminder)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, date, pendingIntent)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminder.date + reminder.time, pendingIntent)
     }
     private fun createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
