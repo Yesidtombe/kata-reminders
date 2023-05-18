@@ -1,6 +1,7 @@
 package com.dojo.globant.reminders.feature.reminder.list.domain.model
 
 import com.dojo.globant.reminders.R
+import com.dojo.globant.reminders.feature.reminder.add.data.db.entities.ReminderEntity
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
 
 data class Reminder(
@@ -22,6 +23,16 @@ fun AddReminderState.toDomain() = Reminder(
     title = title,
     description = description,
     type = type ?: Reminder.TypeReminder.PERSONAL,
+    image = R.drawable.round_access_time,
+    date = date,
+    time = time
+)
+
+fun ReminderEntity.toDomain() = Reminder(
+    id = id,
+    title = title,
+    description = description,
+    type = type,
     image = R.drawable.round_access_time,
     date = date,
     time = time

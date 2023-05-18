@@ -17,23 +17,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.dojo.globant.reminders.R
-import com.dojo.globant.reminders.common.Constants
 import com.dojo.globant.reminders.core.navigation.Destination
 import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
-import java.text.SimpleDateFormat
-import java.util.*
+import com.dojo.globant.reminders.feature.reminder.list.ui.ReminderState
+import com.dojo.globant.reminders.feature.reminder.list.ui.viewmodel.ListReminderViewModel
 
 @Composable
 fun ReminderScreen(
+    viewModel: ListReminderViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val items = listOf(
-        Reminder(1, "Recordatorio 1", "Este es el recordatorio 1", Reminder.TypeReminder.WORKING, R.drawable.round_access_time, Date().time, Date().time),
-        Reminder(2, "Recordatorio 2", "Este es el recordatorio 2", Reminder.TypeReminder.PERSONAL, R.drawable.round_access_time, Date().time, Date().time),
-        Reminder(3, "Recordatorio 3", "Este es el recordatorio 3", Reminder.TypeReminder.WORKING, R.drawable.round_access_time, Date().time, Date().time)
-    )
+    val items = viewModel.items
 
     Scaffold(
         floatingActionButton = {
@@ -41,14 +37,14 @@ fun ReminderScreen(
                 navController.navigate(route = Destination.ADD)
             }
         }
-    ) {
+    ) { _ ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            items.forEach {
+            items.value.forEach {
                 MyReminder(item = it)
             }
         }
@@ -57,7 +53,7 @@ fun ReminderScreen(
 
 @Composable
 fun MyReminder(
-    item: Reminder
+    item: ReminderState
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -89,11 +85,10 @@ fun MyReminder(
                 Text(text = item.title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
             Column {
-                val date = SimpleDateFormat(Constants.PATTERN_DATE_HOUR, Locale.getDefault())
-                Text(text = date.format(item.date))
+                Text(text = item.date)
             }
             Column {
-                Text(text = item.type.name, fontSize = 12.sp)
+                Text(text = item.type?.name ?: Reminder.TypeReminder.PERSONAL.name, fontSize = 12.sp)
             }
         }
     }

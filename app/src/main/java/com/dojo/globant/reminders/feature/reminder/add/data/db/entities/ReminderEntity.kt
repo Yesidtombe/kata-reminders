@@ -15,7 +15,7 @@ data class ReminderEntity(
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "type")
-    val type: String,
+    val type: Reminder.TypeReminder,
     @ColumnInfo(name = "date")
     val date: Long,
     @ColumnInfo(name = "time")
@@ -26,7 +26,7 @@ fun Reminder.toDatabase() = ReminderEntity(
     id = id,
     title = title,
     description = description,
-    type = type.name,
+    type = type,
     date = date,
     time = time
 )
