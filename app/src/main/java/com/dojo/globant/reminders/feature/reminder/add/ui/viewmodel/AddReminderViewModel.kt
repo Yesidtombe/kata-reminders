@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.ValidateDescriptionUseCase
-import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.ValidateTitleUseCase
-import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.ValidateTypeUseCase
+import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.*
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderFormEvent
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +15,9 @@ import javax.inject.Inject
 class AddReminderViewModel @Inject constructor(
     private val validateTitleUseCase: ValidateTitleUseCase,
     private val validateDescriptionUseCase: ValidateDescriptionUseCase,
-    private val validateTypeUseCase: ValidateTypeUseCase
+    private val validateTypeUseCase: ValidateTypeUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
+    private val validateTimeUseCase: ValidateTimeUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(AddReminderState())
@@ -36,6 +36,12 @@ class AddReminderViewModel @Inject constructor(
             is AddReminderFormEvent.TypeChanged -> {
                 state = state.copy(type = event.type)
             }
+            is AddReminderFormEvent.DateChanged -> {
+                state = state.copy(date = event.date)
+            }
+            is AddReminderFormEvent.TimeChanged -> {
+                state = state.copy(time = event.time)
+            }
             is AddReminderFormEvent.OnCreateReminder -> {
                 navController?.let {
                     submitData(it)
@@ -48,16 +54,22 @@ class AddReminderViewModel @Inject constructor(
         val titleResult = validateTitleUseCase(state.title)
         val descriptionResult = validateDescriptionUseCase(state.description)
         val typeResult = validateTypeUseCase(state.type)
+        val dateResult = validateDateUseCase(state.date)
+        val timeResult = validateTimeUseCase(state.time)
         val hasError = listOf(
             titleResult,
             descriptionResult,
-            typeResult
+            typeResult,
+            dateResult,
+            timeResult
         ).any { !it.successful }
 
         state = state.copy(
             titleError = titleResult.errorMessage,
             descriptionError = descriptionResult.errorMessage,
-            typeError = typeResult.errorMessage
+            typeError = typeResult.errorMessage,
+            dateError = dateResult.errorMessage,
+            timeError = timeResult.errorMessage
         )
 
         if (hasError)

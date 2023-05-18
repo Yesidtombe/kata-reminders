@@ -9,8 +9,8 @@ data class AddReminderState(
     val descriptionError: UiText? = null,
     val type: String = "",
     val typeError: UiText? = null,
-    val date: String = "",
+    val date: Long = 0L,
     val dateError: UiText? = null,
-    val time: String = "",
+    val time: Long = 0L,
     val timeError: UiText? = null,
 )

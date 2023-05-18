@@ -22,20 +22,56 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dojo.globant.reminders.R
 import com.dojo.globant.reminders.common.composables.textfield.GenericTextField
+import com.dojo.globant.reminders.common.util.toTime
+import com.dojo.globant.reminders.common.util.toTimeInHours
+import com.dojo.globant.reminders.common.util.toTimeInMin
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderFormEvent
 import com.dojo.globant.reminders.feature.reminder.add.ui.viewmodel.AddReminderViewModel
 import com.dojo.globant.reminders.feature.reminder.list.domain.model.Reminder
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockSelection
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddReminder(
     viewModel: AddReminderViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val state = viewModel.state
+    val calendarState = rememberSheetState()
+    val clockState = rememberSheetState()
+    val buttonDate = remember { mutableStateOf("Date") }
+    val buttonTime = remember { mutableStateOf("Time") }
+
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            monthSelection = true,
+            yearSelection = true
+        ),
+        selection = CalendarSelection.Date { date ->
+            buttonDate.value = date.toString()
+            viewModel.onEvent(AddReminderFormEvent.DateChanged(date.toTime()))
+        }
+    )
+
+    ClockDialog(
+        state = clockState,
+        selection = ClockSelection.HoursMinutes { hours, minutes ->
+            buttonTime.value = "$hours:$minutes"
+            viewModel.onEvent(AddReminderFormEvent.TimeChanged(hours.toTimeInHours() + minutes.toTimeInMin()))
+        }
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(12.dp)
             .verticalScroll(rememberScrollState())
     ) {
         GenericTextField(
@@ -60,20 +96,13 @@ fun AddReminder(
             selectedText = state.type,
             items = listOf(Reminder.TypeReminder.WORKING.name, Reminder.TypeReminder.PERSONAL.name)
         )
-        OutlinedButton(
-            shape = RoundedCornerShape(30.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            border = BorderStroke(1.dp, Color.DarkGray),
-            onClick = {
-
-            }
-        ) {
+        state.typeError?.let {
             Text(
-                modifier = Modifier.padding(4.dp),
-                text = stringResource(id = R.string.date),
-                fontSize = 15.sp
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                text = it.asString(),
+                color = Color.Red
             )
         }
         OutlinedButton(
@@ -83,13 +112,47 @@ fun AddReminder(
                 .padding(horizontal = 24.dp),
             border = BorderStroke(1.dp, Color.DarkGray),
             onClick = {
-
+                calendarState.show()
             }
         ) {
             Text(
                 modifier = Modifier.padding(4.dp),
-                text = stringResource(id = R.string.hour),
+                text = buttonDate.value,
                 fontSize = 15.sp
+            )
+        }
+        state.dateError?.let {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                text = it.asString(),
+                color = Color.Red
+            )
+        }
+        OutlinedButton(
+            shape = RoundedCornerShape(30.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            border = BorderStroke(1.dp, Color.DarkGray),
+            onClick = {
+                clockState.show()
+            }
+        ) {
+            Text(
+                modifier = Modifier.padding(4.dp),
+                text = buttonTime.value,
+                fontSize = 15.sp
+            )
+        }
+        state.timeError?.let {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                text = it.asString(),
+                color = Color.Red
             )
         }
         Button(
@@ -121,7 +184,7 @@ fun DropDownItem(
     items: List<String>
 ) {
     val expanded = remember { mutableStateOf(false) }
-    Column(Modifier.padding(4.dp)) {
+    Column {
         OutlinedTextField(
             modifier = Modifier
                 .clickable {
@@ -135,7 +198,7 @@ fun DropDownItem(
             readOnly = true,
             shape = ShapeDefaults.Large,
             colors = TextFieldDefaults.colors(
-                disabledTextColor = Color.DarkGray,
+                disabledTextColor = Color.Black,
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White
             )
