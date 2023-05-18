@@ -4,11 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.*
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderFormEvent
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
+import com.dojo.globant.reminders.feature.reminder.list.domain.model.toDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +21,8 @@ class AddReminderViewModel @Inject constructor(
     private val validateDescriptionUseCase: ValidateDescriptionUseCase,
     private val validateTypeUseCase: ValidateTypeUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
-    private val validateTimeUseCase: ValidateTimeUseCase
+    private val validateTimeUseCase: ValidateTimeUseCase,
+    private val addReminderUseCase: AddReminderUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(AddReminderState())
@@ -53,7 +58,7 @@ class AddReminderViewModel @Inject constructor(
     private fun submitData(navController: NavController) {
         val titleResult = validateTitleUseCase(state.title)
         val descriptionResult = validateDescriptionUseCase(state.description)
-        val typeResult = validateTypeUseCase(state.type)
+        val typeResult = validateTypeUseCase(state.type?.name.orEmpty())
         val dateResult = validateDateUseCase(state.date)
         val timeResult = validateTimeUseCase(state.time)
         val hasError = listOf(
@@ -75,6 +80,15 @@ class AddReminderViewModel @Inject constructor(
         if (hasError)
             return
 
-        navController.popBackStack()
+        addReminder(navController)
+    }
+
+    private fun addReminder(navController: NavController) {
+        viewModelScope.launch {
+            addReminderUseCase(state.toDomain()).collect {
+                if (it)
+                    navController.popBackStack()
+            }
+        }
     }
 }

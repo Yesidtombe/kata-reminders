@@ -6,6 +6,7 @@ buildscript {
         navigationComposeVersion = '2.5.3'
         activityComposeVersion = '1.7.1'
         material3Version = '1.1.0'
+        roomVersion = '2.5.1'
     }
     dependencies {
         // other plugins...

@@ -93,8 +93,8 @@ fun AddReminder(
         DropDownItem(
             viewModel = viewModel,
             name = stringResource(R.string.reminder_type),
-            selectedText = state.type,
-            items = listOf(Reminder.TypeReminder.WORKING.name, Reminder.TypeReminder.PERSONAL.name)
+            selectedText = state.type?.name.orEmpty(),
+            items = Reminder.TypeReminder.values()
         )
         state.typeError?.let {
             Text(
@@ -181,7 +181,7 @@ fun DropDownItem(
     viewModel: AddReminderViewModel,
     name: String,
     selectedText: String,
-    items: List<String>
+    items: Array<Reminder.TypeReminder>
 ) {
     val expanded = remember { mutableStateOf(false) }
     Column {
@@ -210,7 +210,7 @@ fun DropDownItem(
         ) {
             items.forEach {
                 DropdownMenuItem(
-                    text = { Text(text = it) },
+                    text = { Text(text = it.name) },
                     onClick = {
                         viewModel.onEvent(AddReminderFormEvent.TypeChanged(it))
                         expanded.value = false
