@@ -1,17 +1,19 @@
 package com.dojo.globant.reminders.feature.reminder.add.ui.viewmodel
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.dojo.globant.reminders.R
 import com.dojo.globant.reminders.feature.reminder.add.domain.usecases.*
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderFormEvent
 import com.dojo.globant.reminders.feature.reminder.add.ui.AddReminderState
 import com.dojo.globant.reminders.feature.reminder.list.domain.model.toDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +31,8 @@ class AddReminderViewModel @Inject constructor(
 
     fun onEvent(
         event: AddReminderFormEvent,
-        navController: NavController? = null
+        navController: NavController? = null,
+        context: Context? = null
     ) {
         when (event) {
             is AddReminderFormEvent.TitleChanged -> {
@@ -49,13 +52,13 @@ class AddReminderViewModel @Inject constructor(
             }
             is AddReminderFormEvent.OnCreateReminder -> {
                 navController?.let {
-                    submitData(it)
+                    submitData(it, context)
                 }
             }
         }
     }
 
-    private fun submitData(navController: NavController) {
+    private fun submitData(navController: NavController, context: Context?) {
         val titleResult = validateTitleUseCase(state.title)
         val descriptionResult = validateDescriptionUseCase(state.description)
         val typeResult = validateTypeUseCase(state.type?.name.orEmpty())
@@ -80,14 +83,18 @@ class AddReminderViewModel @Inject constructor(
         if (hasError)
             return
 
-        addReminder(navController)
+        addReminder(navController, context)
     }
 
-    private fun addReminder(navController: NavController) {
+    private fun addReminder(navController: NavController, context: Context?) {
         viewModelScope.launch {
-            addReminderUseCase(state.toDomain()).collect {
-                if (it)
+            addReminderUseCase(state.toDomain()).collect { result ->
+                if (result) {
+                    context?.let { ctx ->
+                        Toast.makeText(ctx, ctx.getString(R.string.reminder_created_message), Toast.LENGTH_SHORT).show()
+                    }
                     navController.popBackStack()
+                }
             }
         }
     }

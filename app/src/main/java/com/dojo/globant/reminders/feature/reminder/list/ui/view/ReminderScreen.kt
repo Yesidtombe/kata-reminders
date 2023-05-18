@@ -1,11 +1,8 @@
 package com.dojo.globant.reminders.feature.reminder.list.ui.view
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -44,8 +41,10 @@ fun ReminderScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            items.value.forEach {
-                MyReminder(item = it)
+            items.value.forEach { reminder ->
+                MyReminder(item = reminder) {
+                    viewModel.navigateToDetail(navController, it)
+                }
             }
         }
     }
@@ -53,10 +52,13 @@ fun ReminderScreen(
 
 @Composable
 fun MyReminder(
-    item: ReminderState
+    item: ReminderState,
+    onClickItem: (Int) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClickItem(item.id) },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

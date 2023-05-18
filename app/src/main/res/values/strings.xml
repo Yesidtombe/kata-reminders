@@ -9,4 +9,5 @@
     <string name="add_new_reminder">Add reminder</string>
     <string name="date">Date</string>
     <string name="hour">Hour</string>
+    <string name="reminder_created_message">Reminder created successful</string>
 </resources>

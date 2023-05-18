@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dojo.globant.reminders.feature.reminder.add.ui.view.AddReminder
+import com.dojo.globant.reminders.feature.reminder.detail.ui.view.DetailReminderScreen
 import com.dojo.globant.reminders.feature.reminder.list.ui.view.ReminderScreen
 
 object Destination {
@@ -26,6 +27,9 @@ fun Navigation (
         }
         composable(route = Destination.ADD) {
             AddReminder(navController = navController)
+        }
+        composable(route = "${Destination.DETAILS}/{id}") {
+            DetailReminderScreen(idReminder = it.arguments?.getString("id"))
         }
     }
 }

@@ -3,6 +3,8 @@ package com.dojo.globant.reminders.feature.reminder.list.ui.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.dojo.globant.reminders.core.navigation.Destination
 import com.dojo.globant.reminders.feature.reminder.list.domain.usecases.GetAllReminderUseCase
 import com.dojo.globant.reminders.feature.reminder.list.ui.ReminderState
 import com.dojo.globant.reminders.feature.reminder.list.ui.toModel
@@ -24,5 +26,9 @@ class ListReminderViewModel @Inject constructor(
                 _items.value = reminders.map { it.toModel() }
             }
         }
+    }
+
+    fun navigateToDetail(navController: NavController, idReminder: Int) {
+        navController.navigate("${Destination.DETAILS}/$idReminder")
     }
 }

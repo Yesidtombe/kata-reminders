@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +44,7 @@ fun AddReminder(
     navController: NavController
 ) {
     val state = viewModel.state
+    val context = LocalContext.current
     val calendarState = rememberSheetState()
     val clockState = rememberSheetState()
     val buttonDate = remember { mutableStateOf("Date") }
@@ -163,7 +165,8 @@ fun AddReminder(
             onClick = {
                 viewModel.onEvent(
                     event = AddReminderFormEvent.OnCreateReminder,
-                    navController = navController
+                    navController = navController,
+                    context = context
                 )
             }
         ) {

@@ -13,4 +13,8 @@ class GetReminderRepository @Inject constructor(
     suspend fun getAllReminders(): List<Reminder> {
         return reminderDao.getAllReminders().map { it.toDomain() }
     }
+
+    suspend fun getReminderById(id: Int): Reminder {
+        return reminderDao.getReminderById(id).toDomain()
+    }
 }
